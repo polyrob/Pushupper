@@ -1,283 +1,257 @@
 package com.robbomb.pushupper;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuItem;
+import android.view.MenuInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.robbomb.pushupper.helper.DateHelper;
 import com.robbomb.pushupper.helper.PushupDatabaseHelper;
+import com.robbomb.pushupper.model.PushupData;
 import com.robbomb.pushupper.model.PushupSet;
+import com.roomorama.caldroid.CaldroidFragment;
+import com.roomorama.caldroid.CaldroidListener;
 
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
+    private static String TAG = "MainActivity";
 
-    public static final int MAX_SET = 200;
-    public static final String TARGET_REPS = "targetReps";
-    public static final String TARGET_DAY = "targetDay";
-    public DateTime now;
-    private PushupDatabaseHelper helper;
-    private NumberPicker numberPicker;
-    private ProgressBar progressBar;
-    private TextView pushupsOwed;
-    private int dayOneReps;
-    private DateTime dayOneDate;
+    PushupData data;
+    CaldroidFragment caldroidFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        now = DateTime.now(); // let's just get this once and save it.
+        Log.i(TAG, "onCreate()");
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-
-        helper = new PushupDatabaseHelper(getApplicationContext());
-        pushupsOwed = (TextView) findViewById(R.id.pushupsOwed);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        numberPicker = (NumberPicker) findViewById(R.id.numberPicker);
-        numberPicker.setMaxValue(MAX_SET);
-        numberPicker.setWrapSelectorWheel(false);
-
-
-        /* see if we have pref data - ie, already did initial setup */
-        SharedPreferences prefs = getPreferences(0);
-        dayOneReps = prefs.getInt(TARGET_REPS, 0);
-        if (dayOneReps > 0) {
-            dayOneDate = DateHelper.parse(prefs.getString(TARGET_DAY, ""));
-            Log.i("MainActivity", "found pref data: " + dayOneReps + ", " + dayOneDate.toString());
-            /* get all of our pushups and do the calculations for today */
-            List<PushupSet> pushups = helper.getPushupsForDate(DateTime.now());
-            int pushupsLoggedToday = 0;
-            for (PushupSet set : pushups) {
-                pushupsLoggedToday += set.getReps();
-            }
-            Log.i("main activity", pushups.size() + ", " + pushupsLoggedToday);
-
-            TextView pushupsToday = (TextView) findViewById(R.id.pushupsToday);
-            pushupsToday.setText(String.valueOf(pushupsLoggedToday));
-
-            final int neededToday = getPushupsNeededToday(dayOneDate, dayOneReps, now);
-            int remaining = neededToday - pushupsLoggedToday;
-            pushupsOwed.setText(String.valueOf(remaining));
-
-            /* set the numberpicker to the smaller of the last set or the remaining pushups */
-            int defaultReps = Math.min(pushups.get(pushups.size()-1).getReps(), remaining);
-            numberPicker.setValue(defaultReps);
-
-            /* set progress bar */
-            Handler progressBarHandler = new Handler();
-            final int finalPushupsLoggedToday = pushupsLoggedToday;
-            progressBarHandler .post(new Runnable() {
-                public void run() {
-                    progressBar.setProgress(finalPushupsLoggedToday);
-                    progressBar.setMax(neededToday);
-                }
-            });
-
-            Log.i("progress bar", pushupsLoggedToday + ", " + progressBar.getProgress() + ", " + progressBar.getMax());
-
+        data = new PushupData();
+        boolean hasProfile = initPrefs(data);
+        if (hasProfile) {
+            loadHistoricalData(data);
+            updateStats(data);
+            initCalendar(data);
+            initLogSetButtons();
         } else {
-            /* no preferences and thus not target created */
             showFirstTimeDialog();
-        }
-
-
-        Button buttonSubmit = (Button) findViewById(R.id.button_submit);
-        buttonSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PushupSet set = new PushupSet();
-                set.setReps(numberPicker.getValue());
-                set.setDateTime(DateTime.now());
-
-                helper.insertPushupSet(set);
-                Toast toast = Toast.makeText(v.getContext(), "Pushup Set Added!", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        });
-
-        Button buttonTest = (Button) findViewById(R.id.button_testdb);
-        buttonTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                DateTime yesterday = DateTime.now();
-                List<PushupSet> pushups = helper.getPushupsForDate(yesterday);
-                Toast toast = Toast.makeText(v.getContext(), "number of records: " + pushups.size(), Toast.LENGTH_LONG);
-                toast.show();
-            }
-        });
-
-        Button buttonTestYesterday = (Button) findViewById(R.id.button_test_yesterday);
-        buttonTestYesterday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DateTime yesterday = DateTime.now().minusDays(1);
-                List<PushupSet> pushups = helper.getPushupsForDate(yesterday);
-                Toast toast = Toast.makeText(v.getContext(), "number of records: " + pushups.size(), Toast.LENGTH_LONG);
-                toast.show();
-            }
-        });
-
-        initializeFields();
-    }
-
-    protected int getPushupsNeededToday(DateTime dayOneDate, int dayOneReps, DateTime now) {
-        int daysBetween = Days.daysBetween(now.withTimeAtStartOfDay(), dayOneDate.withTimeAtStartOfDay()).getDays();
-        int calcDays = dayOneReps + daysBetween;
-        return calcDays;
-    }
-
-
-
-    private void initializeFields() {
-        TextView headerDate = (TextView) findViewById(R.id.header_date);
-        headerDate.setText(DateTime.now().toString(DateHelper.humanFormat));
-
-    }
-
-    public void onSubmitPushups(View v) {
-        PushupSet set = new PushupSet();
-        set.setReps(numberPicker.getValue());
-        set.setDateTime(DateTime.now());
-
-        helper.insertPushupSet(set);
-        Toast toast = Toast.makeText(this, "Pushup Set Added!", Toast.LENGTH_SHORT);
-        toast.show();
-    }
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    private void updateStats(PushupData data) {
+        Log.i(TAG, "updateStats()");
+        TextView stat_total = (TextView) findViewById(R.id.stat_total);
+        TextView stat_today = (TextView) findViewById(R.id.stat_today);
+        TextView stat_remaining = (TextView) findViewById(R.id.stat_remaining);
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        List<PushupSet> history = data.getHistory();
+        int allTime = 0;
+        for (PushupSet set : history) {
+            allTime += set.getReps();
+        }
+        stat_total.setText(String.valueOf(allTime));
+
+        int neededToday = DateHelper.getDaysBetween(data.getDayOneDate(), DateTime.now()) + data.getDayOneReps();
+        stat_today.setText(String.valueOf(neededToday));
+
+        /* calc remaining */
+        int todays = 0;
+        for (PushupSet set : data.getTodays()) {
+            todays += set.getReps();
+        }
+
+        stat_remaining.setText(String.valueOf(neededToday - todays));
+    }
+
+    private void loadHistoricalData(PushupData data) {
+        PushupDatabaseHelper helper = new PushupDatabaseHelper(getApplicationContext());
+        List<PushupSet> allHistory = helper.getLoggedPushups();
+        data.setHistory(allHistory);
+
+        List<PushupSet> todays = helper.getPushupsForDate(DateTime.now());
+        data.setTodays(todays);
+
+        /* save the last reps to pre-populate NumberPicker */
+        if (allHistory.size() > 0) {
+            PushupSet lastSet = allHistory.get(allHistory.size() - 1);
+            data.setLastReps(lastSet.getReps());
+        }
+    }
+
+    private boolean initPrefs(PushupData data) {
+        /* see if we have pref data - ie, already did initial setup */
+        SharedPreferences prefs = getPreferences(0);
+        int dayOneReps = prefs.getInt(Constants.TARGET_REPS, 0);
+        if (dayOneReps > 0) {
+            DateTime dayOneDate = DateHelper.parse(prefs.getString(Constants.TARGET_DAY, ""));
+            data.setDayOneReps(dayOneReps);
+            data.setDayOneDate(dayOneDate);
             return true;
         }
-
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+    public void initCalendar(PushupData data) {
+        Log.i(TAG, "initCalendar() - " + Thread.currentThread().getName());
+        caldroidFragment = new CaldroidFragment();
+        Bundle args = new Bundle();
+        Calendar cal = Calendar.getInstance();
+        args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
+        args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
+        caldroidFragment.setArguments(args);
+        android.support.v4.app.FragmentTransaction t = getSupportFragmentManager().beginTransaction();
 
-        } else if (id == R.id.nav_slideshow) {
+        t.add(R.id.cal_container, caldroidFragment, "caldroid");
+        t.commit();
 
-        } else if (id == R.id.nav_manage) {
+        processCalendarGoals(caldroidFragment, data);
 
-        } else if (id == R.id.nav_share) {
+        caldroidFragment.setCaldroidListener(new CaldroidListener() {
+            @Override
+            public void onSelectDate(Date date, View view) {
+                Log.i(TAG, "Date clicked, " + date.toString());
+            }
+        });
 
-        } else if (id == R.id.nav_send) {
+        caldroidFragment.refreshView();
+    }
 
+    private void processCalendarGoals(CaldroidFragment caldroidFragment, PushupData data) {
+        PushupDatabaseHelper helper = new PushupDatabaseHelper(getApplicationContext());
+        DateTime startDate = data.getDayOneDate();
+
+        int daysToProcess = DateHelper.getDaysBetween(startDate, DateTime.now());
+        for (int i = 0; i <= daysToProcess; i++) {
+            DateTime date = startDate.plusDays(i);
+
+            /* check status for date */
+            ArrayList<PushupSet> sets = helper.getPushupsForDate(startDate);
+            if (sets.size() == 0) {
+                caldroidFragment.setBackgroundResourceForDate(R.color.status_missed, date.toDate());
+                continue;
+            } else {
+                int pushupsDone = 0;
+                for (PushupSet set : sets) {
+                    pushupsDone += set.getReps();
+                }
+                int neededToday = data.getDayOneReps() + i;
+                if (neededToday - pushupsDone > 0) {
+                    caldroidFragment.setBackgroundResourceForDate(R.color.status_under, date.toDate());
+                    continue;
+                }
+                caldroidFragment.setBackgroundResourceForDate(R.color.status_met, date.toDate());
+            }
         }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
+    private void initLogSetButtons() {
+        Button logSetButton = (Button) findViewById(R.id.btn_log_set);
+        logSetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent logSetIntent = new Intent(MainActivity.this, LogSetActivity.class);
+                startActivityForResult(logSetIntent, 0);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent returnData) {
+        super.onActivityResult(requestCode, resultCode, returnData);
+        Log.i(TAG, "onActivityResult, requestCode: " + requestCode + ", resultCode: " + resultCode);
+        if (Constants.LOG_SUCCESS == resultCode) {
+            String toastText = "Added " + returnData.getExtras().getInt(Constants.REPS) + " reps";
+            Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
+
+            loadHistoricalData(data);
+            updateStats(data);
+
+            Handler handler = new Handler(getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    processCalendarGoals(caldroidFragment, data);
+                    caldroidFragment.refreshView();
+                }
+            });
+
+        } else {
+            String toastText = "An error occurred logging your reps.";
+            Toast.makeText(this, toastText, Toast.LENGTH_LONG).show();
+        }
+    }
 
     /**
      * Method to present the "first time" dialog in order to determine the starting date and target reps
      */
     private void showFirstTimeDialog() {
+        Log.i(TAG, "showFirstTimeDialog()");
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("New Target!");
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View firstTimeLayout = inflater.inflate(R.layout.first_time_layout, null);
         builder.setView(firstTimeLayout);
-        final NumberPicker numberPicker = (NumberPicker) firstTimeLayout.findViewById(R.id.firstTimeNumberPicker);
+        final NumberPicker targetPicker = (NumberPicker) firstTimeLayout.findViewById(R.id.firstTimeNumberPicker);
 
-        numberPicker.setMinValue(1);
-        numberPicker.setMaxValue(500);
-        numberPicker.setValue(40);
-        numberPicker.setWrapSelectorWheel(false);
+        targetPicker.setMinValue(1);
+        targetPicker.setMaxValue(500);
+        targetPicker.setValue(40);
+        targetPicker.setWrapSelectorWheel(false);
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-                dayOneReps = numberPicker.getValue();
-                pushupsOwed.setText(String.valueOf(dayOneReps));
+                int dayOneReps = targetPicker.getValue();
 
                 /* save preferences */
                 SharedPreferences settings = getPreferences(0);
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putString(TARGET_DAY, DateHelper.format(DateTime.now()));
-                editor.putInt(TARGET_REPS, dayOneReps);
+                editor.putString(Constants.TARGET_DAY, DateHelper.format(DateTime.now()));
+                editor.putInt(Constants.TARGET_REPS, dayOneReps);
                 editor.commit();
+
+                /* now we can proceed with doing inits */
+                initPrefs(data);
+                updateStats(data);
+                initCalendar(data);
+                initLogSetButtons();
             }
         });
 
         builder.show();
+
+
+    }
+
+    private void recycleActivity() {
+        // http://stackoverflow.com/questions/3053761/reload-activity-in-android
+        finish();
+        startActivity(getIntent());
     }
 }

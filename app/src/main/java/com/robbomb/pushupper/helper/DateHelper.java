@@ -22,4 +22,8 @@ public class DateHelper {
         return formatter.parseDateTime(s);
     }
 
+    public static int getDaysBetween(DateTime earlyDate, DateTime recentDate) {
+        return Days.daysBetween(earlyDate.withTimeAtStartOfDay(), recentDate.withTimeAtStartOfDay()).getDays();
+    }
+
 }

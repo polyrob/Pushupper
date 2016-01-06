@@ -130,11 +130,5 @@
         android:layout_height="wrap_content"
         android:text="select from DB" />
 
-    <Button
-        android:id="@+id/button_test_yesterday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="get yesterday" />
-
 
 </LinearLayout>
