@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
             DateTime date = startDate.plusDays(i);
 
             /* check status for date */
-            ArrayList<PushupSet> sets = helper.getPushupsForDate(startDate);
+            ArrayList<PushupSet> sets = helper.getPushupsForDate(date);
             if (sets.size() == 0) {
                 caldroidFragment.setBackgroundResourceForDate(R.color.status_missed, date.toDate());
                 continue;
