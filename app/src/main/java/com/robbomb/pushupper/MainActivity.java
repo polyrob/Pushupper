@@ -1,8 +1,10 @@
 package com.robbomb.pushupper;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
@@ -11,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
@@ -56,10 +59,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.i(TAG, "onCreateOptionsMenu()");
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_clear_data:
+                clearData();
+                return true;
+            case R.id.action_about:
+                return true;
+        }
+        return false;
     }
 
     private void updateStats(PushupData data) {
@@ -83,8 +107,10 @@ public class MainActivity extends AppCompatActivity {
         for (PushupSet set : data.getTodays()) {
             todays += set.getReps();
         }
+        data.setRepsToday(todays);
+        data.setRepsRemaining(neededToday - todays);
 
-        stat_remaining.setText(String.valueOf(neededToday - todays));
+        stat_remaining.setText(String.valueOf(data.getRepsRemaining()));
     }
 
     private void loadHistoricalData(PushupData data) {
@@ -126,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
         caldroidFragment.setArguments(args);
         android.support.v4.app.FragmentTransaction t = getSupportFragmentManager().beginTransaction();
 
-        t.add(R.id.cal_container, caldroidFragment, "caldroid");
+        t.replace(R.id.cal_container, caldroidFragment);
         t.commit();
 
         processCalendarGoals(caldroidFragment, data);
@@ -175,6 +201,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent logSetIntent = new Intent(MainActivity.this, LogSetActivity.class);
+                logSetIntent.putExtra(Constants.LAST_REP, data.getLastReps());
+                logSetIntent.putExtra(Constants.DONE_TODAY, data.getRepsToday());
+                logSetIntent.putExtra(Constants.REPS_REMAINING, data.getRepsRemaining());
                 startActivityForResult(logSetIntent, 0);
             }
         });
@@ -200,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-        } else {
+        } else if (Constants.LOG_FAIL == resultCode) {
             String toastText = "An error occurred logging your reps.";
             Toast.makeText(this, toastText, Toast.LENGTH_LONG).show();
         }
@@ -246,6 +275,32 @@ public class MainActivity extends AppCompatActivity {
 
         builder.show();
 
+
+    }
+
+    private void clearData() {
+        Log.i(TAG, "clearData()");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Wipe Data");
+        builder.setMessage("Are you sure you want to clear all data and start over?");
+        builder.setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        PushupDatabaseHelper helper = new PushupDatabaseHelper(getApplicationContext());
+                        helper.dropTable();
+                        SharedPreferences settings = getPreferences(0);
+                        settings.edit().clear().commit();
+                        recycleActivity();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        dialog.cancel();
+                    }
+                });
+        builder.create().show();
 
     }
 

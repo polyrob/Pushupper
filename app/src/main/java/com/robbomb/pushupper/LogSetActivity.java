@@ -1,7 +1,6 @@
 package com.robbomb.pushupper;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -18,8 +17,6 @@ import com.robbomb.pushupper.helper.PushupDatabaseHelper;
 import com.robbomb.pushupper.model.PushupSet;
 
 import org.joda.time.DateTime;
-
-import java.util.List;
 
 public class LogSetActivity extends AppCompatActivity {
     private static final String TAG = "LogSetActivity";
@@ -55,26 +52,17 @@ public class LogSetActivity extends AppCompatActivity {
         numberPicker.setMaxValue(Constants.MAX_REP_SELECT);
         numberPicker.setWrapSelectorWheel(false);
 
+        Intent i = getIntent();
+        int lastReps = i.getExtras().getInt(Constants.LAST_REP);
+        int doneToday = i.getExtras().getInt(Constants.DONE_TODAY);
+        int repsRemaining = i.getExtras().getInt(Constants.REPS_REMAINING);
 
-        /* see if we have pref data - ie, already did initial setup */
-        SharedPreferences prefs = getPreferences(0);
-        dayOneReps = prefs.getInt(Constants.TARGET_REPS, 0);
-        if (dayOneReps > 0) {
-            dayOneDate = DateHelper.parse(prefs.getString(Constants.TARGET_DAY, ""));
-            Log.i("MainActivity", "found pref data: " + dayOneReps + ", " + dayOneDate.toString());
-            /* get all of our pushups and do the calculations for today */
-            List<PushupSet> pushups = helper.getPushupsForDate(DateTime.now());
-            int pushupsLoggedToday = 0;
-            for (PushupSet set : pushups) {
-                pushupsLoggedToday += set.getReps();
-            }
 
-            TextView pushupsToday = (TextView) findViewById(R.id.pushupsToday);
-            pushupsToday.setText(String.valueOf(pushupsLoggedToday));
+        TextView pushupsToday = (TextView) findViewById(R.id.pushupsToday);
+        pushupsToday.setText(String.valueOf(doneToday));
+        pushupsOwed.setText(String.valueOf(repsRemaining));
 
-            /* set the numberpicker to the smaller of the last set or the remaining pushups */
-            int lastSet = pushups.size() > 0 ? pushups.get(pushups.size() - 1).getReps() : 0;
-            numberPicker.setValue(lastSet);
+        numberPicker.setValue(getIntent().getExtras().getInt(Constants.LAST_REP));
 
             /* set progress bar */
 //            Handler progressBarHandler = new Handler();
@@ -87,21 +75,17 @@ public class LogSetActivity extends AppCompatActivity {
 //            });
 
 
-        } else {
-            /* no preferences and thus not target created */
-
-        }
-
         Button buttonSubmit = (Button) findViewById(R.id.button_submit);
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submitSet();
-            }
-
-        });
+                                            @Override
+                                            public void onClick(View v) {
+                                                submitSet();
+                                            }
+                                        }
+        );
 
         initializeFields();
+
     }
 
     private void submitSet() {
@@ -112,12 +96,11 @@ public class LogSetActivity extends AppCompatActivity {
 
         try {
             long returnRecords = helper.insertPushupSet(set);
-            Log.i(TAG, "set submitted, return from helper: " + returnRecords);
-
             Intent intentData = new Intent();
             intentData.putExtra(Constants.REPS, reps);
             setResult(Constants.LOG_SUCCESS, intentData);
         } catch (Exception e) {
+            Log.e(TAG, "An error occurred adding the reps. " + e.getMessage());
             e.printStackTrace();
             setResult(Constants.LOG_FAIL);
         }
@@ -136,7 +119,7 @@ public class LogSetActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 

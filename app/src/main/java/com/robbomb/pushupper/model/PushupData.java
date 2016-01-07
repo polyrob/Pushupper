@@ -10,6 +10,9 @@ import java.util.List;
  */
 public class PushupData {
 
+    private int repsToday;
+    private int repsRemaining;
+
     public PushupData() {
         history = new ArrayList<>();
         todays = new ArrayList<>();
@@ -61,5 +64,21 @@ public class PushupData {
 
     public List<PushupSet> getTodays() {
         return todays;
+    }
+
+    public void setRepsToday(int repsToday) {
+        this.repsToday = repsToday;
+    }
+
+    public int getRepsToday() {
+        return repsToday;
+    }
+
+    public void setRepsRemaining(int repsRemaining) {
+        this.repsRemaining = repsRemaining;
+    }
+
+    public int getRepsRemaining() {
+        return repsRemaining;
     }
 }

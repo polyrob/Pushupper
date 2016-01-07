@@ -142,5 +142,11 @@ public class PushupDatabaseHelper extends SQLiteOpenHelper {
         return pushupSets;
     }
 
+    public void dropTable() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL("DELETE FROM pushups");
+        db.execSQL("VACUUM");
+//        db.execSQL("create table pushups (_id INTEGER primary key autoincrement, datetime TEXT, reps INTEGER)");
+    }
 
 }

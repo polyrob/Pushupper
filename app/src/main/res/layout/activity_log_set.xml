@@ -124,11 +124,5 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/button_testdb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="select from DB" />
-
 
 </LinearLayout>
