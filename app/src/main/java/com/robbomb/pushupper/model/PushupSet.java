@@ -2,10 +2,12 @@ package com.robbomb.pushupper.model;
 
 import org.joda.time.DateTime;
 
+import java.io.Serializable;
+
 /**
  * Created by NewRob on 1/4/2016.
  */
-public class PushupSet {
+public class PushupSet implements Serializable {
     private DateTime dateTime;
     private int reps;
 

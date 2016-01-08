@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="10dp"
-            android:text="You have done"
+            android:text="@string/you_have_done"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
-            android:text="pushup(s) today"
+            android:text="@string/reps_today"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:paddingRight="10dp"
             android:singleLine="false"
-            android:text="You still need"
+            android:text="@string/you_still_need"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
@@ -80,7 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
-            android:text="more  today"
+            android:text="@string/more_today"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
@@ -112,7 +112,7 @@
             android:clickable="false"
             android:paddingLeft="5dp"
             android:paddingRight="20dp"
-            android:text="Push-ups"
+            android:text="@string/reps"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <Button

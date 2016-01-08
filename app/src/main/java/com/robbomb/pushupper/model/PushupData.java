@@ -2,16 +2,14 @@ package com.robbomb.pushupper.model;
 
 import org.joda.time.DateTime;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by NewRob on 1/6/2016.
  */
-public class PushupData {
-
-    private int repsToday;
-    private int repsRemaining;
+public class PushupData implements Serializable {
 
     public PushupData() {
         history = new ArrayList<>();
@@ -23,6 +21,9 @@ public class PushupData {
     private DateTime dayOneDate;
     private int lastReps;
     private List<PushupSet> todays;
+
+    private int repsToday;
+    private int repsRemaining;
 
 
     public List<PushupSet> getHistory() {
@@ -81,4 +82,5 @@ public class PushupData {
     public int getRepsRemaining() {
         return repsRemaining;
     }
+
 }

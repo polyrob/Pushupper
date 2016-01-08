@@ -23,7 +23,8 @@
         android:id="@+id/cal_parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:alpha=".85">
 
         <LinearLayout
             android:id="@+id/cal_container"
@@ -49,7 +50,7 @@
             android:layout_gravity="center"
             android:background="@color/status_met"
             android:minWidth="100dp"
-            android:text="Met Goal"
+            android:text="@string/met_goal"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -59,7 +60,7 @@
             android:layout_gravity="center"
             android:background="@color/status_under"
             android:minWidth="100dp"
-            android:text="Under Goal"
+            android:text="@string/under_goal"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -69,7 +70,7 @@
             android:layout_gravity="center"
             android:background="@color/status_missed"
             android:minWidth="100dp"
-            android:text="Missed"
+            android:text="@string/missed"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
@@ -99,7 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
-                android:text="Total Done"
+                android:text="@string/total_done"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
@@ -131,7 +132,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
-                android:text="Today's Target"
+                android:text="@string/todays_target"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold" />
 
@@ -156,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
-                android:text="Remaining"
+                android:text="@string/remaining"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
@@ -183,5 +184,5 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="center"
-        android:text="Log a set" />
+        android:text="@string/log_a_set" />
 </LinearLayout><!--</ScrollView>-->

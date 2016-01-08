@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private static String TAG = "MainActivity";
 
     private PushupData data;
+    private PushupDatabaseHelper helper;
     private CaldroidFragment caldroidFragment;
 
     @Override
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate()");
         setContentView(R.layout.activity_main);
+
+        helper = new PushupDatabaseHelper(getApplicationContext());
 
         data = new PushupData();
         boolean hasProfile = initPrefs(data);
@@ -64,27 +67,30 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        Log.i(TAG, "onCreateOptionsMenu()");
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        Log.i(TAG, "onCreateOptionsMenu()");
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.menu, menu);
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.action_stats:
+                showStats();
                 return true;
             case R.id.action_clear_data:
                 clearData();
                 return true;
             case R.id.action_about:
+                showAbout();
                 return true;
         }
-        return false;
+        return true;
     }
+
 
     private void updateStats(PushupData data) {
         Log.i(TAG, "updateStats()");
@@ -114,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadHistoricalData(PushupData data) {
-        PushupDatabaseHelper helper = new PushupDatabaseHelper(getApplicationContext());
         List<PushupSet> allHistory = helper.getLoggedPushups();
         data.setHistory(allHistory);
 
@@ -160,7 +165,16 @@ public class MainActivity extends AppCompatActivity {
         caldroidFragment.setCaldroidListener(new CaldroidListener() {
             @Override
             public void onSelectDate(Date date, View view) {
-                Log.i(TAG, "Date clicked, " + date.toString());
+                DateTime dateTime = new DateTime(date);
+                ArrayList<PushupSet> setList = helper.getPushupsForDate(dateTime);
+                int sets = setList.size();
+                int reps = 0;
+                for (PushupSet set : setList) {
+                    reps += set.getReps();
+                }
+                StringBuilder sb = new StringBuilder(dateTime.toString("MMM d"));
+                sb.append(": ").append(sets).append(" sets, ").append(reps).append(" reps");
+                Toast.makeText(view.getContext(), sb.toString(), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -168,7 +182,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void processCalendarGoals(CaldroidFragment caldroidFragment, PushupData data) {
-        PushupDatabaseHelper helper = new PushupDatabaseHelper(getApplicationContext());
         DateTime startDate = data.getDayOneDate();
 
         int daysToProcess = DateHelper.getDaysBetween(startDate, DateTime.now());
@@ -278,6 +291,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    /* Menu Items */
+
+    private void showStats() {
+        Intent intent = new Intent(MainActivity.this, StatsActivity.class);
+        intent.putExtra(Constants.DATA, data);
+        startActivity(intent);
+    }
+
     private void clearData() {
         Log.i(TAG, "clearData()");
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -286,7 +308,6 @@ public class MainActivity extends AppCompatActivity {
         builder.setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        PushupDatabaseHelper helper = new PushupDatabaseHelper(getApplicationContext());
                         helper.dropTable();
                         SharedPreferences settings = getPreferences(0);
                         settings.edit().clear().commit();
@@ -301,7 +322,31 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         builder.create().show();
+    }
 
+    private void showAbout() {
+        Log.i(TAG, "about()");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.app_name);
+        builder.setMessage(R.string.about_desc);
+        builder.setIcon(R.drawable.ic_info);
+//        builder.setCancelable(false)
+//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        helper.dropTable();
+//                        SharedPreferences settings = getPreferences(0);
+//                        settings.edit().clear().commit();
+//                        recycleActivity();
+//                    }
+//                })
+//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        // if this button is clicked, just close
+//                        // the dialog box and do nothing
+//                        dialog.cancel();
+//                    }
+//                });
+        builder.create().show();
     }
 
     private void recycleActivity() {
