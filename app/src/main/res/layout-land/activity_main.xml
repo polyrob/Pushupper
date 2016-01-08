@@ -62,7 +62,7 @@
                 android:layout_gravity="center"
                 android:background="@color/status_met"
                 android:minWidth="100dp"
-                android:text="Met Goal"
+                android:text="@string/met_goal"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -72,7 +72,7 @@
                 android:layout_gravity="center"
                 android:background="@color/status_under"
                 android:minWidth="100dp"
-                android:text="Under Goal"
+                android:text="@string/under_goal"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -82,7 +82,7 @@
                 android:layout_gravity="center"
                 android:background="@color/status_missed"
                 android:minWidth="100dp"
-                android:text="Missed"
+                android:text="@string/missed"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
@@ -97,23 +97,26 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="10dp">
+                android:layout_weight="1">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
-                    android:text="Total Done"
+                    android:text="@string/total_done"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView
@@ -122,7 +125,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="0"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
@@ -130,14 +134,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="10dp">
+                android:layout_weight="1">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
-                    android:text="Today's Target"
+                    android:text="@string/todays_target"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
 
@@ -147,21 +151,23 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="0"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_weight="1">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
-                    android:text="Remaining"
+                    android:text="@string/remaining"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView
@@ -170,7 +176,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="0"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
@@ -182,7 +189,10 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center"
-            android:text="Log a set" />
+            android:text="@string/log_a_set"
+            android:layout_weight="2"
+            android:paddingLeft="0dp"
+            android:layout_marginLeft="5dp" />
     </LinearLayout>
 
 </LinearLayout><!--</ScrollView>-->
