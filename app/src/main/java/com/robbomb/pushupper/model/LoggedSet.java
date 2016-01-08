@@ -7,14 +7,14 @@ import java.io.Serializable;
 /**
  * Created by NewRob on 1/4/2016.
  */
-public class PushupSet implements Serializable {
+public class LoggedSet implements Serializable {
     private DateTime dateTime;
     private int reps;
 
-    public PushupSet() {
+    public LoggedSet() {
     }
 
-    public PushupSet(DateTime datetime, int reps) {
+    public LoggedSet(DateTime datetime, int reps) {
         this.dateTime = datetime;
         this.reps = reps;
     }

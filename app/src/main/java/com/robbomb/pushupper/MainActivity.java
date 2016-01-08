@@ -1,18 +1,17 @@
 package com.robbomb.pushupper;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -22,8 +21,8 @@ import android.widget.Toast;
 
 import com.robbomb.pushupper.helper.DateHelper;
 import com.robbomb.pushupper.helper.PushupDatabaseHelper;
-import com.robbomb.pushupper.model.PushupData;
-import com.robbomb.pushupper.model.PushupSet;
+import com.robbomb.pushupper.model.AppData;
+import com.robbomb.pushupper.model.LoggedSet;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 
@@ -34,10 +33,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static String TAG = "MainActivity";
 
-    private PushupData data;
+    private AppData data;
     private PushupDatabaseHelper helper;
     private CaldroidFragment caldroidFragment;
 
@@ -45,11 +44,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate()");
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main_activity);
+
+        /* setup Navigation Drawer */
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         helper = new PushupDatabaseHelper(getApplicationContext());
 
-        data = new PushupData();
+        data = new AppData();
         boolean hasProfile = initPrefs(data);
         if (hasProfile) {
             loadHistoricalData(data);
@@ -92,15 +97,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void updateStats(PushupData data) {
+    private void updateStats(AppData data) {
         Log.i(TAG, "updateStats()");
         TextView stat_total = (TextView) findViewById(R.id.stat_total);
         TextView stat_today = (TextView) findViewById(R.id.stat_today);
         TextView stat_remaining = (TextView) findViewById(R.id.stat_remaining);
 
-        List<PushupSet> history = data.getHistory();
+        List<LoggedSet> history = data.getHistory();
         int allTime = 0;
-        for (PushupSet set : history) {
+        for (LoggedSet set : history) {
             allTime += set.getReps();
         }
         stat_total.setText(String.valueOf(allTime));
@@ -110,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
         /* calc remaining */
         int todays = 0;
-        for (PushupSet set : data.getTodays()) {
+        for (LoggedSet set : data.getTodays()) {
             todays += set.getReps();
         }
         data.setRepsToday(todays);
@@ -119,21 +124,21 @@ public class MainActivity extends AppCompatActivity {
         stat_remaining.setText(String.valueOf(data.getRepsRemaining()));
     }
 
-    private void loadHistoricalData(PushupData data) {
-        List<PushupSet> allHistory = helper.getLoggedPushups();
+    private void loadHistoricalData(AppData data) {
+        List<LoggedSet> allHistory = helper.getLoggedPushups();
         data.setHistory(allHistory);
 
-        List<PushupSet> todays = helper.getPushupsForDate(DateTime.now());
+        List<LoggedSet> todays = helper.getPushupsForDate(DateTime.now());
         data.setTodays(todays);
 
         /* save the last reps to pre-populate NumberPicker */
         if (allHistory.size() > 0) {
-            PushupSet lastSet = allHistory.get(allHistory.size() - 1);
+            LoggedSet lastSet = allHistory.get(allHistory.size() - 1);
             data.setLastReps(lastSet.getReps());
         }
     }
 
-    private boolean initPrefs(PushupData data) {
+    private boolean initPrefs(AppData data) {
         /* see if we have pref data - ie, already did initial setup */
         SharedPreferences prefs = getPreferences(0);
         int dayOneReps = prefs.getInt(Constants.TARGET_REPS, 0);
@@ -147,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void initCalendar(PushupData data) {
+    public void initCalendar(AppData data) {
         Log.i(TAG, "initCalendar() - " + Thread.currentThread().getName());
         caldroidFragment = new CaldroidFragment();
         Bundle args = new Bundle();
@@ -166,10 +171,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSelectDate(Date date, View view) {
                 DateTime dateTime = new DateTime(date);
-                ArrayList<PushupSet> setList = helper.getPushupsForDate(dateTime);
+                ArrayList<LoggedSet> setList = helper.getPushupsForDate(dateTime);
                 int sets = setList.size();
                 int reps = 0;
-                for (PushupSet set : setList) {
+                for (LoggedSet set : setList) {
                     reps += set.getReps();
                 }
                 StringBuilder sb = new StringBuilder(dateTime.toString("MMM d"));
@@ -181,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
         caldroidFragment.refreshView();
     }
 
-    private void processCalendarGoals(CaldroidFragment caldroidFragment, PushupData data) {
+    private void processCalendarGoals(CaldroidFragment caldroidFragment, AppData data) {
         DateTime startDate = data.getDayOneDate();
 
         int daysToProcess = DateHelper.getDaysBetween(startDate, DateTime.now());
@@ -189,13 +194,13 @@ public class MainActivity extends AppCompatActivity {
             DateTime date = startDate.plusDays(i);
 
             /* check status for date */
-            ArrayList<PushupSet> sets = helper.getPushupsForDate(date);
+            ArrayList<LoggedSet> sets = helper.getPushupsForDate(date);
             if (sets.size() == 0) {
                 caldroidFragment.setBackgroundResourceForDate(R.color.status_missed, date.toDate());
                 continue;
             } else {
                 int pushupsDone = 0;
-                for (PushupSet set : sets) {
+                for (LoggedSet set : sets) {
                     pushupsDone += set.getReps();
                 }
                 int neededToday = data.getDayOneReps() + i;
@@ -329,7 +334,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.app_name);
         builder.setMessage(R.string.about_desc);
-        builder.setIcon(R.drawable.ic_info);
+        builder.setIcon(R.mipmap.ic_launcher);
 //        builder.setCancelable(false)
 //                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 //                    public void onClick(DialogInterface dialog, int id) {
@@ -353,5 +358,34 @@ public class MainActivity extends AppCompatActivity {
         // http://stackoverflow.com/questions/3053761/reload-activity-in-android
         finish();
         startActivity(getIntent());
+    }
+
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.action_about) {
+            showAbout();
+        } else if (id == R.id.action_stats) {
+            showStats();
+        } else if (id == R.id.action_clear_data) {
+            clearData();
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 }

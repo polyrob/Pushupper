@@ -7,11 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.robbomb.pushupper.model.PushupSet;
+import com.robbomb.pushupper.model.LoggedSet;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,15 +42,15 @@ public class PushupDatabaseHelper extends SQLiteOpenHelper {
         // We need not worry about this guy now, or probably ever.
     }
 
-    public long insertPushupSet(PushupSet set) {
+    public long insertPushupSet(LoggedSet set) {
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_DATETIME, DateHelper.format(set.getDateTime()));
         cv.put(COLUMN_REPS, set.getReps());
         return getWritableDatabase().insert(TABLE_PUSHUPS, null, cv);
     }
 
-    public List<PushupSet> getLoggedPushups() {
-        ArrayList<PushupSet> pushupSets = new ArrayList<>();
+    public List<LoggedSet> getLoggedPushups() {
+        ArrayList<LoggedSet> loggedSets = new ArrayList<>();
 
         String selectQuery = "SELECT datetime, reps FROM " + TABLE_PUSHUPS;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -64,14 +62,14 @@ public class PushupDatabaseHelper extends SQLiteOpenHelper {
                 // looping through all rows and adding to list
                 if (cursor.moveToFirst()) {
                     do {
-                        PushupSet pushupSet = new PushupSet();
+                        LoggedSet loggedSet = new LoggedSet();
                         //only one column
                         String dateTimeString = cursor.getString(0);
 
                         DateTime setDate = DateHelper.parse(dateTimeString);
-                        pushupSet.setDateTime(setDate);
-                        pushupSet.setReps(cursor.getInt(1));
-                        pushupSets.add(pushupSet);
+                        loggedSet.setDateTime(setDate);
+                        loggedSet.setReps(cursor.getInt(1));
+                        loggedSets.add(loggedSet);
 
 
                     } while (cursor.moveToNext());
@@ -91,11 +89,11 @@ public class PushupDatabaseHelper extends SQLiteOpenHelper {
             }
         }
 
-        return pushupSets;
+        return loggedSets;
     }
 
-    public ArrayList<PushupSet> getPushupsForDate(DateTime date) {
-        ArrayList<PushupSet> pushupSets = new ArrayList<>();
+    public ArrayList<LoggedSet> getPushupsForDate(DateTime date) {
+        ArrayList<LoggedSet> loggedSets = new ArrayList<>();
 
         String dateString = DateHelper.format(date).substring(0, 10);
 
@@ -113,14 +111,14 @@ public class PushupDatabaseHelper extends SQLiteOpenHelper {
                 // looping through all rows and adding to list
                 if (cursor.moveToFirst()) {
                     do {
-                        PushupSet pushupSet = new PushupSet();
+                        LoggedSet loggedSet = new LoggedSet();
                         //only one column
                         String dateTimeString = cursor.getString(0);
 
                         DateTime setDate = DateHelper.parse(dateTimeString);
-                        pushupSet.setDateTime(setDate);
-                        pushupSet.setReps(cursor.getInt(1));
-                        pushupSets.add(pushupSet);
+                        loggedSet.setDateTime(setDate);
+                        loggedSet.setReps(cursor.getInt(1));
+                        loggedSets.add(loggedSet);
 
                     } while (cursor.moveToNext());
                 }
@@ -139,7 +137,7 @@ public class PushupDatabaseHelper extends SQLiteOpenHelper {
             }
         }
 
-        return pushupSets;
+        return loggedSets;
     }
 
     public void dropTable() {

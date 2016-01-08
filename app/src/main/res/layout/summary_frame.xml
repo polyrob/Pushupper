@@ -24,7 +24,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:alpha=".85">
+        android:alpha=".85"
+        android:layout_margin="0dp">
 
         <LinearLayout
             android:id="@+id/cal_container"
@@ -52,7 +53,7 @@
             android:minWidth="100dp"
             android:text="@string/met_goal"
             android:textAlignment="center"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -62,7 +63,7 @@
             android:minWidth="100dp"
             android:text="@string/under_goal"
             android:textAlignment="center"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -72,7 +73,7 @@
             android:minWidth="100dp"
             android:text="@string/missed"
             android:textAlignment="center"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse" />
     </LinearLayout>
 
     <View

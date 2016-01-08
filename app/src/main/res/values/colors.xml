@@ -2,16 +2,16 @@
 <resources>
     <color name="colorPrimary">#636466</color>
     <color name="colorPrimaryDark">#0062ff</color>
-    <color name="colorAccent">#a6c8ff</color>
-    <color name="colorBackground">#a6c8ff</color>
+    <color name="colorAccent">#66a1ff</color>
+    <!--<color name="colorBackground">#949699</color>-->
 
     <item name="transparent" type="color">#00FFFFFF</item>
     <item name="grey" type="color">#555555</item>
     <item name="green" type="color">#4499CC00</item>
 
-    <item name="status_under" type="color">#AAFFEF00</item>
-    <item name="status_met" type="color">#AA29ED00</item>
-    <item name="status_missed" type="color">#AAFB001D</item>
+    <item name="status_under" type="color">#FFFCA5</item>
+    <item name="status_met" type="color">#a6c8ff</item>
+    <item name="status_missed" type="color">#FF7272</item>
 
     <item name="pGray" type="color">#636466</item>
     <item name="pDkBlue" type="color">#0062ff</item>

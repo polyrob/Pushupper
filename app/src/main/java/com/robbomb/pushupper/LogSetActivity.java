@@ -1,11 +1,9 @@
 package com.robbomb.pushupper;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
@@ -14,11 +12,11 @@ import android.widget.TextView;
 
 import com.robbomb.pushupper.helper.DateHelper;
 import com.robbomb.pushupper.helper.PushupDatabaseHelper;
-import com.robbomb.pushupper.model.PushupSet;
+import com.robbomb.pushupper.model.LoggedSet;
 
 import org.joda.time.DateTime;
 
-public class LogSetActivity extends AppCompatActivity {
+public class LogSetActivity extends Activity {
     private static final String TAG = "LogSetActivity";
 
     public DateTime now;
@@ -91,7 +89,7 @@ public class LogSetActivity extends AppCompatActivity {
     }
 
     private void submitSet() {
-        PushupSet set = new PushupSet();
+        LoggedSet set = new LoggedSet();
         int reps = numberPicker.getValue();
         set.setReps(reps);
         set.setDateTime(DateTime.now());

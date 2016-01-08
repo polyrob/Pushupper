@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Pushupper</string>
+    <string name="app_name">Poosh</string>
 
     <string name="action_start_over">Start Over</string>
     <string name="action_about">About</string>
@@ -18,7 +18,7 @@
     <string name="todays_target">Today\'s Target</string>
     <string name="remaining">Remaining</string>
 
-    <string name="first_time_desc">Choose the number of pushups you want to target for <b>DAY ONE</b>.\n\nEach day you will have to do <b>one more</b> than the previous day.</string>
+    <string name="first_time_desc">Pick a target number of reps for your exercise for today, <b>DAY ONE</b>.\n\nEach day you will have to do <b>one more</b> than the previous day. Keep POOSHing!</string>
 
     <string name="about_desc"></string>
     <string name="action_stats">Statistics</string>

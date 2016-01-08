@@ -9,28 +9,28 @@ import java.util.List;
 /**
  * Created by NewRob on 1/6/2016.
  */
-public class PushupData implements Serializable {
+public class AppData implements Serializable {
 
-    public PushupData() {
+    public AppData() {
         history = new ArrayList<>();
         todays = new ArrayList<>();
     }
 
-    private List<PushupSet> history;
+    private List<LoggedSet> history;
     private int dayOneReps;
     private DateTime dayOneDate;
     private int lastReps;
-    private List<PushupSet> todays;
+    private List<LoggedSet> todays;
 
     private int repsToday;
     private int repsRemaining;
 
 
-    public List<PushupSet> getHistory() {
+    public List<LoggedSet> getHistory() {
         return history;
     }
 
-    public void setHistory(List<PushupSet> history) {
+    public void setHistory(List<LoggedSet> history) {
         this.history = history;
     }
 
@@ -59,11 +59,11 @@ public class PushupData implements Serializable {
     }
 
 
-    public void setTodays(List<PushupSet> todays) {
+    public void setTodays(List<LoggedSet> todays) {
         this.todays = todays;
     }
 
-    public List<PushupSet> getTodays() {
+    public List<LoggedSet> getTodays() {
         return todays;
     }
 
