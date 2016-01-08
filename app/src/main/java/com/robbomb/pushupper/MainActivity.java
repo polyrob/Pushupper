@@ -37,8 +37,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static String TAG = "MainActivity";
 
-    PushupData data;
-    CaldroidFragment caldroidFragment;
+    private PushupData data;
+    private CaldroidFragment caldroidFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

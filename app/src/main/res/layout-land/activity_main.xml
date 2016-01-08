@@ -9,8 +9,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/summaryLayout"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -19,16 +19,25 @@
     tools:context="com.robbomb.pushupper.SummaryActivity">
 
 
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:layout_margin="3dp"-->
+        <!--android:background="@android:color/darker_gray" />-->
+
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/cal_grp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:id="@+id/cal_parent"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="fill_parent"
+            android:orientation="horizontal"
+            android:layout_weight="1">
 
             <LinearLayout
                 android:id="@+id/cal_container"
@@ -40,12 +49,11 @@
 
         <LinearLayout
             android:id="@+id/cal_legend_container"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginTop="2dp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_weight="10">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -79,38 +87,32 @@
         </LinearLayout>
     </LinearLayout>
 
-
-    <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:layout_margin="3dp"
-        android:background="@android:color/darker_gray" />
-
-
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/info_grp"
+        android:layout_weight="3">
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
-                    android:text="Total"
+                    android:text="Total Done"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView
@@ -123,19 +125,11 @@
 
             </LinearLayout>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-
-                android:layout_margin="5dp"
-                android:background="@android:color/darker_gray" />
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -159,7 +153,6 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -183,25 +176,12 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="3dp"
-            android:background="@android:color/darker_gray" />
-
-        <LinearLayout
-            android:id="@+id/log_button_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/btn_log_set"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Log a set" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/btn_log_set"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:text="Log a set" />
     </LinearLayout>
 
-</LinearLayout>
+</LinearLayout><!--</ScrollView>-->
