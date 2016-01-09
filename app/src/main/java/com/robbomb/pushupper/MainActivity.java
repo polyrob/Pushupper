@@ -159,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Calendar cal = Calendar.getInstance();
         args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
         args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
+//        args.putInt(CaldroidFragment.THEME_RESOURCE, R.style.CaldroidDefaultDark);
         caldroidFragment.setArguments(args);
         android.support.v4.app.FragmentTransaction t = getSupportFragmentManager().beginTransaction();
 
