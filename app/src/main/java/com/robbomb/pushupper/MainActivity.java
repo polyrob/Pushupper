@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -59,6 +58,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (data.isFirstTime()) showHelp(true);
     }
 
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private void loadActivity() {
         loadHistoricalData(data);
         updateStats(data);
@@ -106,8 +115,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int neededToday = 0;
         if (data.getDayOneDate() != null) {
             neededToday = DateHelper.getDaysBetween(data.getDayOneDate(), DateTime.now()) + data.getDayOneReps();
-            stat_today.setText(String.valueOf(neededToday));
         }
+        stat_today.setText(String.valueOf(neededToday));
 
         /* calc remaining */
         int todays = 0;
@@ -222,13 +231,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         logSetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent logSetIntent = new Intent(MainActivity.this, LogSetActivity.class);
-                logSetIntent.putExtra(Constants.LAST_REP, data.getLastReps());
-                logSetIntent.putExtra(Constants.DONE_TODAY, data.getRepsToday());
-                logSetIntent.putExtra(Constants.REPS_REMAINING, data.getRepsRemaining());
-                startActivityForResult(logSetIntent, 0);
+                if (data.getDayOneDate() == null || data.getDayOneReps() == 0) {
+                    showTargetNeededDialog();
+                } else {
+                    Intent logSetIntent = new Intent(MainActivity.this, LogSetActivity.class);
+                    logSetIntent.putExtra(Constants.LAST_REP, data.getLastReps());
+                    logSetIntent.putExtra(Constants.DONE_TODAY, data.getRepsToday());
+                    logSetIntent.putExtra(Constants.REPS_REMAINING, data.getRepsRemaining());
+                    startActivityForResult(logSetIntent, 0);
+                }
             }
         });
+    }
+
+    private void showTargetNeededDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("New Target Needed!");
+        builder.setMessage("Please use the navigation drawer at the left to choose a new target before logging your workouts.");
+        builder.setPositiveButton("Got It!", new
+                DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 
     @Override
@@ -331,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         AlertDialog.Builder db = new AlertDialog.Builder(this);
         db.setView(helpLayout);
-        db.setTitle("settings");
+        db.setTitle("Welcome to Poosh It");
         db.setPositiveButton("Got It!", new
                 DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -347,24 +375,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .putBoolean(getString(R.string.first_time), false).commit();
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
+
 
 
     /* Menu Items */
 
-    private void showStats() {
-        Intent intent = new Intent(MainActivity.this, StatsActivity.class);
-        intent.putExtra(Constants.DATA, data);
-        startActivity(intent);
-    }
+//    private void showStats() {
+//        Intent intent = new Intent(MainActivity.this, StatsActivity.class);
+//        intent.putExtra(Constants.DATA, data);
+//        startActivity(intent);
+//    }
 
     private void clearData() {
         Log.i(TAG, "clearData()");
@@ -374,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         builder.setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        helper.dropTable();
+                        helper.dropAll();
                         SharedPreferences.Editor prefs = getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit();
                         prefs.remove(Constants.TARGET_DAY);
                         prefs.remove(Constants.TARGET_REPS);
@@ -398,22 +418,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         builder.setTitle(R.string.app_name);
         builder.setMessage(R.string.about_desc);
         builder.setIcon(R.mipmap.ic_launcher);
-//        builder.setCancelable(false)
-//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        helper.dropTable();
-//                        SharedPreferences settings = getPreferences(0);
-//                        settings.edit().clear().commit();
-//                        recycleActivity();
-//                    }
-//                })
-//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        // if this button is clicked, just close
-//                        // the dialog box and do nothing
-//                        dialog.cancel();
-//                    }
-//                });
         builder.create().show();
     }
 

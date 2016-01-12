@@ -8,6 +8,7 @@ import java.io.Serializable;
  * Created by NewRob on 1/4/2016.
  */
 public class LoggedSet implements Serializable {
+    private int workoutId;
     private DateTime dateTime;
     private int reps;
 
@@ -33,5 +34,13 @@ public class LoggedSet implements Serializable {
 
     public void setReps(int reps) {
         this.reps = reps;
+    }
+
+    public int getWorkoutId() {
+        return workoutId;
+    }
+
+    public void setWorkoutId(int workoutId) {
+        this.workoutId = workoutId;
     }
 }

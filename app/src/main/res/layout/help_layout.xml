@@ -2,21 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Small Text"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+    android:orientation="vertical"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
 
     <View
         android:layout_width="match_parent"
@@ -25,24 +13,52 @@
         android:layout_margin="5dp"
         android:background="@android:color/darker_gray" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Small Text"
+        android:text="@string/help_choose_workout"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:paddingTop="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/help_workout_desc"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
 
-        android:layout_margin="5dp"
-        android:background="@android:color/darker_gray" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/help_target"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:paddingTop="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/help_target_desc"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/help_change"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:paddingTop="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/help_change_desc"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
 </LinearLayout>

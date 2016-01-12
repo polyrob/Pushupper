@@ -18,14 +18,16 @@ import java.util.List;
  * Created by NewRob on 1/4/2016.
  */
 public class PushupDatabaseHelper extends SQLiteOpenHelper {
-    //    public DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
 
     private static final String DB_NAME = "pushups.sqlite";
     private static final int VERSION = 1;
-    private static final String TABLE_PUSHUPS = "pushups";
+
+    private static final String TABLE_POOSH_LOG = "poosh_log";
     private static final String COLUMN_DATETIME = "datetime";
     private static final String COLUMN_REPS = "reps";
+    private static final String COLUMN_WORKOUT_ID = "workout_id";
+
+    private static final String TABLE_TARGETS = "targets";
 
     public PushupDatabaseHelper(Context context) {
         super(context, DB_NAME, null, VERSION);
@@ -34,7 +36,17 @@ public class PushupDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Create the table if it doesn't exist
-        db.execSQL("create table pushups (_id INTEGER primary key autoincrement, datetime TEXT, reps INTEGER)");
+        db.execSQL("create table " + TABLE_POOSH_LOG
+                + " (_id INTEGER primary key autoincrement, "
+                + COLUMN_WORKOUT_ID + " INTEGER, "
+                + COLUMN_DATETIME + " TEXT, "
+                + COLUMN_REPS + " INTEGER)");
+
+        db.execSQL("create table " + TABLE_TARGETS
+                + " (_id INTEGER primary key autoincrement, "
+                + COLUMN_WORKOUT_ID + " INTEGER, "
+                + COLUMN_DATETIME + " TEXT, "
+                + COLUMN_REPS + " INTEGER)");
     }
 
     @Override
@@ -44,33 +56,29 @@ public class PushupDatabaseHelper extends SQLiteOpenHelper {
 
     public long insertPushupSet(LoggedSet set) {
         ContentValues cv = new ContentValues();
+        cv.put(COLUMN_WORKOUT_ID, set.getWorkoutId());
         cv.put(COLUMN_DATETIME, DateHelper.format(set.getDateTime()));
         cv.put(COLUMN_REPS, set.getReps());
-        return getWritableDatabase().insert(TABLE_PUSHUPS, null, cv);
+        return getWritableDatabase().insert(TABLE_POOSH_LOG, null, cv);
     }
 
     public List<LoggedSet> getLoggedPushups() {
         ArrayList<LoggedSet> loggedSets = new ArrayList<>();
 
-        String selectQuery = "SELECT datetime, reps FROM " + TABLE_PUSHUPS;
+        String selectQuery = "SELECT " + COLUMN_WORKOUT_ID + ", " + COLUMN_DATETIME + ", " + COLUMN_REPS + " FROM " + TABLE_POOSH_LOG;
         SQLiteDatabase db = this.getReadableDatabase();
         try {
-
             Cursor cursor = db.rawQuery(selectQuery, null);
             try {
-
-                // looping through all rows and adding to list
                 if (cursor.moveToFirst()) {
                     do {
                         LoggedSet loggedSet = new LoggedSet();
-                        //only one column
-                        String dateTimeString = cursor.getString(0);
-
+                        loggedSet.setWorkoutId(cursor.getInt(0));
+                        String dateTimeString = cursor.getString(1);
                         DateTime setDate = DateHelper.parse(dateTimeString);
                         loggedSet.setDateTime(setDate);
-                        loggedSet.setReps(cursor.getInt(1));
+                        loggedSet.setReps(cursor.getInt(2));
                         loggedSets.add(loggedSet);
-
 
                     } while (cursor.moveToNext());
                 }
@@ -97,7 +105,7 @@ public class PushupDatabaseHelper extends SQLiteOpenHelper {
 
         String dateString = DateHelper.format(date).substring(0, 10);
 
-        String selectQuery = "SELECT datetime, reps FROM " + TABLE_PUSHUPS
+        String selectQuery = "SELECT " + COLUMN_WORKOUT_ID + ", " + COLUMN_DATETIME + ", " + COLUMN_REPS + " FROM " + TABLE_POOSH_LOG
                 + " WHERE datetime LIKE '" + dateString + "%'";
 
         Log.i("PushupDatabaseHelper", selectQuery);
@@ -112,12 +120,11 @@ public class PushupDatabaseHelper extends SQLiteOpenHelper {
                 if (cursor.moveToFirst()) {
                     do {
                         LoggedSet loggedSet = new LoggedSet();
-                        //only one column
-                        String dateTimeString = cursor.getString(0);
-
+                        loggedSet.setWorkoutId(cursor.getInt(0));
+                        String dateTimeString = cursor.getString(1);
                         DateTime setDate = DateHelper.parse(dateTimeString);
                         loggedSet.setDateTime(setDate);
-                        loggedSet.setReps(cursor.getInt(1));
+                        loggedSet.setReps(cursor.getInt(2));
                         loggedSets.add(loggedSet);
 
                     } while (cursor.moveToNext());
@@ -140,11 +147,14 @@ public class PushupDatabaseHelper extends SQLiteOpenHelper {
         return loggedSets;
     }
 
-    public void dropTable() {
+    public void dropAll() {
         SQLiteDatabase db = this.getReadableDatabase();
-        db.execSQL("DELETE FROM pushups");
+        db.execSQL("DELETE FROM " + TABLE_POOSH_LOG);
         db.execSQL("VACUUM");
-//        db.execSQL("create table pushups (_id INTEGER primary key autoincrement, datetime TEXT, reps INTEGER)");
+
+        db.execSQL("DELETE FROM " + TABLE_TARGETS);
+        db.execSQL("VACUUM");
     }
+
 
 }
