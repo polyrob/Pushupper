@@ -12,6 +12,7 @@ import java.util.List;
 public class AppData implements Serializable {
 
     private boolean firstTime;
+    private int currentTargetId;
 
     public AppData() {
         history = new ArrayList<>();
@@ -91,5 +92,13 @@ public class AppData implements Serializable {
 
     public boolean isFirstTime() {
         return firstTime;
+    }
+
+    public int getCurrentTargetId() {
+        return currentTargetId;
+    }
+
+    public void setCurrentTargetId(int currentTargetId) {
+        this.currentTargetId = currentTargetId;
     }
 }

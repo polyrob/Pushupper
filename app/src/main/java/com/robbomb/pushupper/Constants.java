@@ -19,4 +19,6 @@ public class Constants {
     public static final String DONE_TODAY = "DONE_TODAY";
     public static final String REPS_REMAINING = "REPS_REMAINING";
     public static final String DATA = "DATA_OBJECT";
+    public static final String TARGET = "TARGET";
+    public static final int DEFAULT_WORKOUT_ID = 0;
 }

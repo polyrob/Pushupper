@@ -27,6 +27,7 @@ public class LogSetActivity extends Activity {
     private int dayOneReps;
     private DateTime dayOneDate;
 
+    int currentTarget = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,7 @@ public class LogSetActivity extends Activity {
         int lastReps = i.getExtras().getInt(Constants.LAST_REP);
         int doneToday = i.getExtras().getInt(Constants.DONE_TODAY);
         int repsRemaining = i.getExtras().getInt(Constants.REPS_REMAINING);
+        currentTarget = i.getExtras().getInt(Constants.TARGET);
 
 
         TextView pushupsToday = (TextView) findViewById(R.id.pushupsToday);

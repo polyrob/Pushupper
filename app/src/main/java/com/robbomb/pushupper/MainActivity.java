@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
@@ -24,6 +25,7 @@ import com.robbomb.pushupper.helper.DateHelper;
 import com.robbomb.pushupper.helper.PushupDatabaseHelper;
 import com.robbomb.pushupper.model.AppData;
 import com.robbomb.pushupper.model.LoggedSet;
+import com.robbomb.pushupper.model.Target;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 
@@ -121,6 +123,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         data.setRepsToday(todays);
         data.setRepsRemaining(neededToday - todays);
+        if (data.getRepsRemaining() > 0) {
+            stat_remaining.setTextColor(ContextCompat.getColor(this, R.color.status_under));
+        } else {
+            stat_remaining.setTextColor(stat_remaining.getTextColors().getDefaultColor());
+        }
 
         stat_remaining.setText(String.valueOf(data.getRepsRemaining()));
     }
@@ -137,6 +144,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             LoggedSet lastSet = allHistory.get(allHistory.size() - 1);
             data.setLastReps(lastSet.getReps());
         }
+
+        ArrayList<Target> targets = helper.getTargetsForWorkout(Constants.DEFAULT_WORKOUT_ID);
+        if (targets.size() > 0) {
+            Target lastTarget = targets.get(targets.size()-1);
+            data.setCurrentTargetId(lastTarget.getTargetId());
+        }
+
+
     }
 
     private void initPrefs(AppData data) {
@@ -232,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     logSetIntent.putExtra(Constants.LAST_REP, data.getLastReps());
                     logSetIntent.putExtra(Constants.DONE_TODAY, data.getRepsToday());
                     logSetIntent.putExtra(Constants.REPS_REMAINING, data.getRepsRemaining());
+                    logSetIntent.putExtra(Constants.TARGET, data.getCurrentTargetId());
                     startActivityForResult(logSetIntent, 0);
                 }
             }
@@ -420,7 +436,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         AlertDialog.Builder db = new AlertDialog.Builder(this);
         db.setView(helpLayout);
-        db.setTitle("Welcome to Poosh It");
+        db.setTitle("About Poosh It");
         db.setPositiveButton("Uhh, thanks?", new
                 DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -428,6 +444,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
         AlertDialog dialog = db.create();
+        dialog.setIcon(R.mipmap.ic_launcher);
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }

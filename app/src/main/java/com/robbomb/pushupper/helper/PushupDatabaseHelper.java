@@ -51,6 +51,7 @@ public class PushupDatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL("create table " + TABLE_TARGETS
                 + " (" + COLUMN_TARGET_ID + " INTEGER primary key autoincrement, "
+                + COLUMN_WORKOUT_ID + " INTEGER, "
                 + COLUMN_DATETIME + " TEXT, "
                 + COLUMN_REPS + " INTEGER)");
 
@@ -80,8 +81,8 @@ public class PushupDatabaseHelper extends SQLiteOpenHelper {
 
     public List<LoggedSet> getLoggedPushups() {
         ArrayList<LoggedSet> loggedSets = new ArrayList<>();
-
         String selectQuery = "SELECT " + COLUMN_TARGET_ID + ", " + COLUMN_DATETIME + ", " + COLUMN_REPS + " FROM " + TABLE_POOSH_LOG;
+        Log.i("PushupDatabaseHelper", selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
         try {
             Cursor cursor = db.rawQuery(selectQuery, null);
@@ -118,14 +119,11 @@ public class PushupDatabaseHelper extends SQLiteOpenHelper {
 
     public ArrayList<LoggedSet> getPushupsForDate(DateTime date) {
         ArrayList<LoggedSet> loggedSets = new ArrayList<>();
-
         String dateString = DateHelper.format(date).substring(0, 10);
-
         String selectQuery = "SELECT " + COLUMN_TARGET_ID + ", " + COLUMN_DATETIME + ", " + COLUMN_REPS + " FROM " + TABLE_POOSH_LOG
                 + " WHERE datetime LIKE '" + dateString + "%'";
 
         Log.i("PushupDatabaseHelper", selectQuery);
-
         SQLiteDatabase db = this.getReadableDatabase();
         try {
 
