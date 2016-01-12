@@ -23,7 +23,7 @@
 
     <string name="first_time_desc">Pick a target number of reps for your exercise for today, <b>DAY ONE</b>.\n\nEach day you will have to do <b>one more</b> than the previous day. Keep POOSHing!</string>
 
-    <string name="about_desc">Milo of Croton (c. 6th-century BC) was alleged to have achieved his legendary strength by lifting a newborn calf and every day repeating the task until it was as large as a bull. Why? Because there wasn\'t a whole lot to do in the 6th-century.\n\nStill, embrace his legend and Poosh yourself!\n\n2016 - rob@robbomb.com.</string>
+    <string name="about_desc">Milo of Croton (c. 6th-century BC) was alleged to have achieved his legendary strength by lifting a newborn calf and every day repeating the task until it was as large as a bull. Why? Because there wasn\'t a whole lot to do in the 6th-century.\n\nEmbrace his legend and Poosh yourself with progressive resistance training!\n\nMilo reportedly died when he tried to tear a tree apart, became trapped, and was devoured by wolves.</string>
     <string name="action_help">Help</string>
     <string name="Cancel">Cancel</string>
     <string name="submit">Submit</string>
@@ -34,6 +34,7 @@
     <string name="help_target_desc">In the next window, select the number of reps you want to start with today. Each day you will have to do just <i>one more</i>.</string>
     <string name="help_change">Change Your Target Anytime</string>
     <string name="help_change_desc">Swipe the menu at the left to change your target or start over with a new workout.</string>
+    <string name="poosh_progressive_resistance">Poosh It - Progressive Resistance</string>
 
 
 </resources>

@@ -2,23 +2,14 @@ package com.robbomb.pushupper.model;
 
 import org.joda.time.DateTime;
 
-import java.io.Serializable;
-
 /**
- * Created by NewRob on 1/4/2016.
+ * Created by NewRob on 1/12/2016.
  */
-public class LoggedSet implements Serializable {
+public class Target {
     private int targetId;
+    private int workoutId;
     private DateTime dateTime;
     private int reps;
-
-    public LoggedSet() {
-    }
-
-    public LoggedSet(DateTime datetime, int reps) {
-        this.dateTime = datetime;
-        this.reps = reps;
-    }
 
     public DateTime getDateTime() {
         return dateTime;
@@ -42,5 +33,23 @@ public class LoggedSet implements Serializable {
 
     public void setTargetId(int targetId) {
         this.targetId = targetId;
+    }
+
+    public int getWorkoutId() {
+        return workoutId;
+    }
+
+    public void setWorkoutId(int workoutId) {
+        this.workoutId = workoutId;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Target{");
+        sb.append("workoutId=").append(workoutId);
+        sb.append(", dateTime=").append(dateTime);
+        sb.append(", reps=").append(reps);
+        sb.append('}');
+        return sb.toString();
     }
 }

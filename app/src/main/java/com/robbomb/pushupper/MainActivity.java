@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -409,11 +410,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void showAbout() {
         Log.i(TAG, "about()");
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.app_name);
-        builder.setMessage(R.string.about_desc);
-        builder.setIcon(R.mipmap.ic_launcher);
-        builder.create().show();
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle(R.string.poosh_progressive_resistance);
+//        builder.setMessage(R.string.about_desc);
+//        builder.setIcon(R.mipmap.ic_launcher);
+//        builder.show();
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View helpLayout = inflater.inflate(R.layout.about_layout, null);
+
+        AlertDialog.Builder db = new AlertDialog.Builder(this);
+        db.setView(helpLayout);
+        db.setTitle("Welcome to Poosh It");
+        db.setPositiveButton("Uhh, thanks?", new
+                DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog dialog = db.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 
 }
