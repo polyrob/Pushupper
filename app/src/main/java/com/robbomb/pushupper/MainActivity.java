@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -34,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    public static final String PREFERENCE = "POOSHIT";
     private static String TAG = "MainActivity";
 
     private AppData data;
@@ -44,27 +46,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate()");
-
-
-        data = new AppData();
-        boolean hasProfile = initPrefs(data);
-        if (hasProfile) {
-            loadActivity();
-        } else {
-            showHelp(true);
-        }
-    }
-
-    private void loadActivity() {
         setContentView(R.layout.main_activity);
-            /* setup Navigation Drawer */
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         helper = new PushupDatabaseHelper(getApplicationContext());
+        data = new AppData();
 
+        initPrefs(data);
+        loadActivity();
+        if (data.isFirstTime()) showHelp(true);
+    }
+
+    private void loadActivity() {
         loadHistoricalData(data);
         updateStats(data);
         initCalendar(data);
@@ -108,8 +103,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         stat_total.setText(String.valueOf(allTime));
 
         Log.i(TAG, data.getDayOneDate() + " - " + data.getDayOneReps());
-        int neededToday = DateHelper.getDaysBetween(data.getDayOneDate(), DateTime.now()) + data.getDayOneReps();
-        stat_today.setText(String.valueOf(neededToday));
+        int neededToday = 0;
+        if (data.getDayOneDate() != null) {
+            neededToday = DateHelper.getDaysBetween(data.getDayOneDate(), DateTime.now()) + data.getDayOneReps();
+            stat_today.setText(String.valueOf(neededToday));
+        }
 
         /* calc remaining */
         int todays = 0;
@@ -138,7 +136,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private boolean initPrefs(AppData data) {
         /* see if we have pref data - ie, already did initial setup */
-        SharedPreferences prefs = getPreferences(0);
+        SharedPreferences prefs = getSharedPreferences("PREFERENCE", MODE_PRIVATE);
+        data.setFirstTime(prefs.getBoolean(getString(R.string.first_time), Boolean.TRUE));
+        Log.i(TAG, "first time value from initPrefs: " + data.isFirstTime());
         int dayOneReps = prefs.getInt(Constants.TARGET_REPS, 0);
         if (dayOneReps > 0) {
             DateTime dayOneDate = DateHelper.parse(prefs.getString(Constants.TARGET_DAY, ""));
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void processCalendarGoals(CaldroidFragment caldroidFragment, AppData data) {
-        DateTime startDate = data.getDayOneDate();
+        DateTime startDate = data.getDayOneDate() == null ? DateTime.now() : data.getDayOneDate();
 
         int daysToProcess = DateHelper.getDaysBetween(startDate, DateTime.now());
         for (int i = 0; i <= daysToProcess; i++) {
@@ -281,8 +281,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 int dayOneReps = targetPicker.getValue();
 
                 /* save preferences */
-                SharedPreferences settings = getPreferences(0);
-                SharedPreferences.Editor editor = settings.edit();
+                SharedPreferences.Editor editor = getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit();
                 editor.putString(Constants.TARGET_DAY, DateHelper.format(DateTime.now()));
                 editor.putInt(Constants.TARGET_REPS, dayOneReps);
                 editor.commit();
@@ -326,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    private void showHelp(final boolean targetNeeded) {
+    private void showHelp(final boolean getTarget) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View helpLayout = inflater.inflate(R.layout.help_layout, null);
 
@@ -337,12 +336,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        if (targetNeeded) showNewTargetDialog();
+                        if (getTarget) showNewTargetDialog();
                     }
                 });
         AlertDialog dialog = db.create();
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
+
+        getSharedPreferences(PREFERENCE, MODE_PRIVATE).edit()
+                .putBoolean(getString(R.string.first_time), false).commit();
     }
 
     @Override
@@ -373,9 +375,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         helper.dropTable();
-                        SharedPreferences settings = getPreferences(0);
-                        settings.edit().clear().commit();
-                        recycleActivity();
+                        SharedPreferences.Editor prefs = getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit();
+                        prefs.remove(Constants.TARGET_DAY);
+                        prefs.remove(Constants.TARGET_REPS);
+                        prefs.commit();
+                        data = new AppData();
+                        loadActivity();
+                        showNewTargetDialog();
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {

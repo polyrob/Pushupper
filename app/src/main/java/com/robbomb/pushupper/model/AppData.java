@@ -11,6 +11,8 @@ import java.util.List;
  */
 public class AppData implements Serializable {
 
+    private boolean firstTime;
+
     public AppData() {
         history = new ArrayList<>();
         todays = new ArrayList<>();
@@ -83,4 +85,11 @@ public class AppData implements Serializable {
         return repsRemaining;
     }
 
+    public void setFirstTime(boolean firstTime) {
+        this.firstTime = firstTime;
+    }
+
+    public boolean isFirstTime() {
+        return firstTime;
+    }
 }
