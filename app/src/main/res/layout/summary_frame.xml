@@ -10,7 +10,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/summaryLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -22,10 +22,11 @@
     <LinearLayout
         android:id="@+id/cal_parent"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:orientation="horizontal"
         android:alpha=".85"
-        android:layout_margin="0dp">
+        android:layout_margin="0dp"
+        android:layout_weight="2">
 
         <LinearLayout
             android:id="@+id/cal_container"
@@ -38,10 +39,10 @@
 
     <LinearLayout
         android:id="@+id/cal_legend_container"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="4dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -53,7 +54,8 @@
             android:minWidth="100dp"
             android:text="@string/met_goal"
             android:textAlignment="center"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse" />
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse"
+            android:layout_weight="1" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -63,7 +65,8 @@
             android:minWidth="100dp"
             android:text="@string/under_goal"
             android:textAlignment="center"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse" />
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse"
+            android:layout_weight="1" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -73,7 +76,8 @@
             android:minWidth="100dp"
             android:text="@string/missed"
             android:textAlignment="center"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse" />
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse"
+            android:layout_weight="1" />
     </LinearLayout>
 
     <View
@@ -91,10 +95,10 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_weight="1">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -114,19 +118,11 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-
-            android:layout_margin="5dp"
-            android:background="@android:color/darker_gray" />
-
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_weight="1">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -148,10 +144,10 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_weight="1">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -182,8 +178,16 @@
 
     <Button
         android:id="@+id/btn_log_set"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_gravity="center"
-        android:text="@string/log_a_set" />
+
+        android:drawableStart="@android:drawable/ic_menu_add"
+        android:drawableLeft="@android:drawable/ic_menu_add"
+
+        android:text="@string/log_a_set"
+        android:layout_marginTop="5dp"
+        android:layout_weight="5"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp" />
 </LinearLayout><!--</ScrollView>-->

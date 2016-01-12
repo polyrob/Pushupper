@@ -49,6 +49,7 @@ public class LogSetActivity extends Activity {
         pushupsOwed = (TextView) findViewById(R.id.pushupsOwed);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         numberPicker = (NumberPicker) findViewById(R.id.numberPicker);
+        numberPicker.setMinValue(1);
         numberPicker.setMaxValue(Constants.MAX_REP_SELECT);
         numberPicker.setWrapSelectorWheel(false);
 

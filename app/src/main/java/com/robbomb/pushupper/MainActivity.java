@@ -44,9 +44,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate()");
-        setContentView(R.layout.main_activity);
 
-        /* setup Navigation Drawer */
+
+        data = new AppData();
+        boolean hasProfile = initPrefs(data);
+        if (hasProfile) {
+            loadActivity();
+        } else {
+            showHelp(true);
+        }
+    }
+
+    private void loadActivity() {
+        setContentView(R.layout.main_activity);
+            /* setup Navigation Drawer */
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -54,16 +65,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         helper = new PushupDatabaseHelper(getApplicationContext());
 
-        data = new AppData();
-        boolean hasProfile = initPrefs(data);
-        if (hasProfile) {
-            loadHistoricalData(data);
-            updateStats(data);
-            initCalendar(data);
-            initLogSetButtons();
-        } else {
-            showFirstTimeDialog();
-        }
+        loadHistoricalData(data);
+        updateStats(data);
+        initCalendar(data);
+        initLogSetButtons();
     }
 
     @Override
@@ -72,20 +77,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        Log.i(TAG, "onCreateOptionsMenu()");
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.menu, menu);
-//        return true;
-//    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_stats:
-                showStats();
-                return true;
+//            case R.id.action_stats:
+//                showStats();
+//                return true;
             case R.id.action_clear_data:
                 clearData();
                 return true;
@@ -110,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         stat_total.setText(String.valueOf(allTime));
 
+        Log.i(TAG, data.getDayOneDate() + " - " + data.getDayOneReps());
         int neededToday = DateHelper.getDaysBetween(data.getDayOneDate(), DateTime.now()) + data.getDayOneReps();
         stat_today.setText(String.valueOf(neededToday));
 
@@ -181,6 +179,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 StringBuilder sb = new StringBuilder(dateTime.toString("MMM d"));
                 sb.append(": ").append(sets).append(" sets, ").append(reps).append(" reps");
                 Toast.makeText(view.getContext(), sb.toString(), Toast.LENGTH_LONG).show();
+//                Toast toast = new Toast(getApplicationContext());
+//                toast.setText(sb.toString());
+//                toast.setDuration(Toast.LENGTH_SHORT);
+//                toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+//                toast.show();
             }
         });
 
@@ -257,18 +260,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Method to present the "first time" dialog in order to determine the starting date and target reps
      */
-    private void showFirstTimeDialog() {
-        Log.i(TAG, "showFirstTimeDialog()");
+    private void showNewTargetDialog() {
+        Log.i(TAG, "showNewTargetDialog()");
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("New Target!");
 
         LayoutInflater inflater = LayoutInflater.from(this);
-        View firstTimeLayout = inflater.inflate(R.layout.first_time_layout, null);
-        builder.setView(firstTimeLayout);
-        final NumberPicker targetPicker = (NumberPicker) firstTimeLayout.findViewById(R.id.firstTimeNumberPicker);
+        View newTarget = inflater.inflate(R.layout.first_time_layout, null);
+        builder.setView(newTarget);
+        final NumberPicker targetPicker = (NumberPicker) newTarget.findViewById(R.id.firstTimeNumberPicker);
 
-        targetPicker.setMinValue(1);
-        targetPicker.setMaxValue(500);
+        targetPicker.setMinValue(10);
+        targetPicker.setMaxValue(1000);
         targetPicker.setValue(40);
         targetPicker.setWrapSelectorWheel(false);
 
@@ -286,15 +289,70 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 /* now we can proceed with doing inits */
                 initPrefs(data);
-                updateStats(data);
-                initCalendar(data);
-                initLogSetButtons();
+                loadActivity();
             }
         });
 
         builder.show();
 
 
+    }
+
+
+    private void recycleActivity() {
+        // http://stackoverflow.com/questions/3053761/reload-activity-in-android
+        finish();
+        startActivity(getIntent());
+    }
+
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.action_about) {
+            showAbout();
+        } else if (id == R.id.action_help) {
+            showHelp(false);
+//        } else if (id == R.id.action_stats) {
+//            showStats();
+        } else if (id == R.id.action_clear_data) {
+            clearData();
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void showHelp(final boolean targetNeeded) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View helpLayout = inflater.inflate(R.layout.help_layout, null);
+
+        AlertDialog.Builder db = new AlertDialog.Builder(this);
+        db.setView(helpLayout);
+        db.setTitle("settings");
+        db.setPositiveButton("Got It!", new
+                DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        if (targetNeeded) showNewTargetDialog();
+                    }
+                });
+        AlertDialog dialog = db.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
 
@@ -322,8 +380,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // if this button is clicked, just close
-                        // the dialog box and do nothing
                         dialog.cancel();
                     }
                 });
@@ -355,38 +411,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         builder.create().show();
     }
 
-    private void recycleActivity() {
-        // http://stackoverflow.com/questions/3053761/reload-activity-in-android
-        finish();
-        startActivity(getIntent());
-    }
-
-
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.action_about) {
-            showAbout();
-        } else if (id == R.id.action_stats) {
-            showStats();
-        } else if (id == R.id.action_clear_data) {
-            clearData();
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
 }

@@ -1,22 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/action_stats"
-            android:title="@string/action_stats" />
+    <group>
+        <!--<item-->
+            <!--android:id="@+id/action_stats"-->
+            <!--android:icon="@android:drawable/ic_menu_sort_by_size"-->
+            <!--android:title="@string/action_stats" />-->
 
         <item
             android:id="@+id/action_about"
+            android:icon="@android:drawable/ic_menu_info_details"
             android:title="@string/action_about" />
+
+        <item
+            android:id="@+id/action_help"
+            android:icon="@android:drawable/ic_menu_help"
+            android:title="@string/action_help" />
+
+
     </group>
 
-    <group android:checkableBehavior="single">
+    <group>
         <item
             android:id="@+id/action_clear_data"
+            android:icon="@android:drawable/ic_menu_delete"
             android:title="@string/action_start_over" />
 
 
     </group>
+
 
 </menu>

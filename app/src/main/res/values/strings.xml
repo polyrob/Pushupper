@@ -1,11 +1,14 @@
 <resources>
-    <string name="app_name">Poosh</string>
+    <string name="app_name">Poosh It</string>
+    <string name="email">rob@robbomb.com</string>
+    <string name="slogan">Poosh it real good.</string>
 
     <string name="action_start_over">Start Over</string>
-    <string name="action_about">About</string>
+    <string name="action_about">About Poosh It</string>
+    <string name="action_stats">My Statistics</string>
+
 
     <string name="reps">Reps</string>
-
     <string name="met_goal">Met Goal</string>
     <string name="under_goal">Under Goal</string>
     <string name="missed">Missed</string>
@@ -13,7 +16,7 @@
     <string name="you_have_done">You have done</string>
     <string name="reps_today">reps today</string>
     <string name="you_still_need">You still need</string>
-    <string name="more_today">more today</string>
+    <string name="more_today">more</string>
     <string name="total_done">Total</string>
     <string name="todays_target">Today\'s Target</string>
     <string name="remaining">Remaining</string>
@@ -21,7 +24,10 @@
     <string name="first_time_desc">Pick a target number of reps for your exercise for today, <b>DAY ONE</b>.\n\nEach day you will have to do <b>one more</b> than the previous day. Keep POOSHing!</string>
 
     <string name="about_desc"></string>
-    <string name="action_stats">Statistics</string>
+    <string name="action_help">Help</string>
+    <string name="Cancel">Cancel</string>
+    <string name="submit">Submit</string>
+
 
 </resources>
 

@@ -186,14 +186,15 @@
 
         <Button
             android:id="@+id/btn_log_set"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_gravity="center"
             android:text="@string/log_a_set"
             android:layout_weight="2"
-            android:paddingLeft="0dp"
             android:layout_marginLeft="5dp"
-            android:capitalize="none" />
+            android:drawableStart="@android:drawable/ic_menu_add"
+            android:drawableLeft="@android:drawable/ic_menu_add"
+            android:padding="40dp" />
     </LinearLayout>
 
 </LinearLayout><!--</ScrollView>-->
