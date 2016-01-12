@@ -75,11 +75,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initLogSetButtons();
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -143,9 +138,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private boolean initPrefs(AppData data) {
+    private void initPrefs(AppData data) {
         /* see if we have pref data - ie, already did initial setup */
-        SharedPreferences prefs = getSharedPreferences("PREFERENCE", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(PREFERENCE, MODE_PRIVATE);
         data.setFirstTime(prefs.getBoolean(getString(R.string.first_time), Boolean.TRUE));
         Log.i(TAG, "first time value from initPrefs: " + data.isFirstTime());
         int dayOneReps = prefs.getInt(Constants.TARGET_REPS, 0);
@@ -153,9 +148,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             DateTime dayOneDate = DateHelper.parse(prefs.getString(Constants.TARGET_DAY, ""));
             data.setDayOneReps(dayOneReps);
             data.setDayOneDate(dayOneDate);
-            return true;
         }
-        return false;
     }
 
 
@@ -309,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 int dayOneReps = targetPicker.getValue();
 
                 /* save preferences */
-                SharedPreferences.Editor editor = getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = getSharedPreferences(PREFERENCE, MODE_PRIVATE).edit();
                 editor.putString(Constants.TARGET_DAY, DateHelper.format(DateTime.now()));
                 editor.putInt(Constants.TARGET_REPS, dayOneReps);
                 editor.commit();
@@ -320,9 +313,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        builder.show();
-
-
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 
 
@@ -371,6 +364,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
 
+
+        Log.i(TAG, "showHelp - setting first_time boolean to false in settings");
         getSharedPreferences(PREFERENCE, MODE_PRIVATE).edit()
                 .putBoolean(getString(R.string.first_time), false).commit();
     }
@@ -395,7 +390,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         helper.dropAll();
-                        SharedPreferences.Editor prefs = getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit();
+                        SharedPreferences.Editor prefs = getSharedPreferences(PREFERENCE, MODE_PRIVATE).edit();
                         prefs.remove(Constants.TARGET_DAY);
                         prefs.remove(Constants.TARGET_REPS);
                         prefs.commit();

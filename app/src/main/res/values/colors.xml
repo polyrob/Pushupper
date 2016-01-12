@@ -3,6 +3,7 @@
     <color name="colorPrimary">#636466</color>
     <color name="colorPrimaryDark">#0062ff</color>
     <color name="colorAccent">#66a1ff</color>
+    <color name="colorPrimaryExtraDark">#001028</color>
     <!--<color name="colorBackground">#949699</color>-->
 
     <item name="transparent" type="color">#00FFFFFF</item>
