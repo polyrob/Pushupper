@@ -3,7 +3,7 @@
     <string name="email">rob@robbomb.com</string>
     <string name="slogan">Poosh it real good.</string>
 
-    <string name="action_start_over">New Target</string>
+    <string name="action_start_over">Clear Data</string>
     <string name="action_about">About Poosh It</string>
     <string name="action_stats">My Statistics</string>
 

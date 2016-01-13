@@ -23,7 +23,7 @@
     <group>
         <item
             android:id="@+id/action_change_target"
-            android:icon="@android:drawable/ic_menu_preferences"
+            android:icon="@android:drawable/ic_menu_edit"
             android:title="@string/action_change_target" />
 
         <item
