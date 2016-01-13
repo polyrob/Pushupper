@@ -20,7 +20,8 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/help_choose_workout"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:paddingTop="10dp" />
+        android:paddingTop="10dp"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -36,7 +37,8 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/help_target"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:paddingTop="20dp" />
+        android:paddingTop="20dp"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -51,7 +53,8 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/help_change"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:paddingTop="20dp" />
+        android:paddingTop="20dp"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"

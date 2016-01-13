@@ -43,4 +43,14 @@ public class LoggedSet implements Serializable {
     public void setTargetId(int targetId) {
         this.targetId = targetId;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("LoggedSet{");
+        sb.append("targetId=").append(targetId);
+        sb.append(", dateTime=").append(dateTime);
+        sb.append(", reps=").append(reps);
+        sb.append('}');
+        return sb.toString();
+    }
 }

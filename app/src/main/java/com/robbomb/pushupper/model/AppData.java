@@ -13,6 +13,7 @@ public class AppData implements Serializable {
 
     private boolean firstTime;
     private int currentTargetId;
+    private ArrayList<Target> targets;
 
     public AppData() {
         history = new ArrayList<>();
@@ -20,8 +21,6 @@ public class AppData implements Serializable {
     }
 
     private List<LoggedSet> history;
-    private int dayOneReps;
-    private DateTime dayOneDate;
     private int lastReps;
     private List<LoggedSet> todays;
 
@@ -35,22 +34,6 @@ public class AppData implements Serializable {
 
     public void setHistory(List<LoggedSet> history) {
         this.history = history;
-    }
-
-    public void setDayOneReps(int dayOneReps) {
-        this.dayOneReps = dayOneReps;
-    }
-
-    public int getDayOneReps() {
-        return dayOneReps;
-    }
-
-    public void setDayOneDate(DateTime dayOneDate) {
-        this.dayOneDate = dayOneDate;
-    }
-
-    public DateTime getDayOneDate() {
-        return dayOneDate;
     }
 
     public void setLastReps(int lastReps) {
@@ -100,5 +83,41 @@ public class AppData implements Serializable {
 
     public void setCurrentTargetId(int currentTargetId) {
         this.currentTargetId = currentTargetId;
+    }
+
+    public void setTargets(ArrayList<Target> targets) {
+        this.targets = targets;
+    }
+
+    public ArrayList<Target> getTargets() {
+        return targets;
+    }
+
+    public Target getCurrentTarget() {
+        if (targets.size() == 0) return null;
+        return targets.get(targets.size() - 1);
+    }
+
+    public Target getFirstTarget() {
+        if (targets == null || targets.size() == 0) return null;
+        return targets.get(0);
+    }
+
+//    public Target getTargetForDay(DateTime date) {
+//        Target target;
+//        for (Target t : targets) {
+//            if (date.isBefore(t.getDateTime())) {
+//
+//            }
+//        }
+//
+//        return target;
+//    }
+
+    public Target getTargetForId(int id){
+        for (Target t : targets) {
+            if (t.getTargetId() == id) return t;
+        }
+        return null;
     }
 }

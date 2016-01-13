@@ -28,14 +28,25 @@
     <string name="Cancel">Cancel</string>
     <string name="submit">Submit</string>
     <string name="first_time">first_time</string>
-    <string name="help_choose_workout">Decide on a Workout</string>
-    <string name="help_workout_desc">Push-ups, sit-ups, crunches, pull-ups, whatever you want! </string>
+    <string name="help_choose_workout">Think of an Exercise</string>
+    <string name="help_workout_desc">Push-ups, sit-ups, crunches, pull-ups, whatever you want!</string>
     <string name="help_target">Pick your Day-One Target</string>
     <string name="help_target_desc">In the next window, select the number of reps you want to start with today. Each day you will have to do just <i>one more</i>.</string>
     <string name="help_change">Change Your Target Anytime</string>
     <string name="help_change_desc">Swipe the menu at the left to change your target or start over with a new workout.</string>
     <string name="poosh_progressive_resistance">Poosh It - Progressive Resistance</string>
     <string name="email_year">2016 - rob@robbomb.com</string>
+    <string name="target_needed_msg">Please use the navigation drawer at the left to choose a new target before logging your workouts.</string>
+    <string name="target_needed_title">New Target Needed!</string>
+    <string name="about_dialog_title">About Poosh It</string>
+    <string name="about_dialog_okay">Uhh, thanks?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="help_dialog_title">Welcome to Poosh It</string>
+    <string name="help_dialog_okay">Got It!</string>
+    <string name="clear_dialog_message">Are you sure you want to clear all data and start over?</string>
+    <string name="clear_dialog_title">Wipe Data</string>
+    <string name="action_change_target">Change Target</string>
 
 
 </resources>

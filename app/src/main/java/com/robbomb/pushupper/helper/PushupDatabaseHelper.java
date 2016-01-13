@@ -72,10 +72,12 @@ public class PushupDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public long insertPushupSet(LoggedSet set) {
+        Log.i("PushupDatabaseHelper", set.toString());
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_TARGET_ID, set.getTargetId());
         cv.put(COLUMN_DATETIME, DateHelper.format(set.getDateTime()));
         cv.put(COLUMN_REPS, set.getReps());
+
         return getWritableDatabase().insert(TABLE_POOSH_LOG, null, cv);
     }
 
@@ -130,7 +132,6 @@ public class PushupDatabaseHelper extends SQLiteOpenHelper {
             Cursor cursor = db.rawQuery(selectQuery, null);
             try {
 
-                // looping through all rows and adding to list
                 if (cursor.moveToFirst()) {
                     do {
                         LoggedSet loggedSet = new LoggedSet();

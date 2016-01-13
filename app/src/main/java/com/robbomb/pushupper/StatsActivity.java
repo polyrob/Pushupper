@@ -16,8 +16,6 @@ public class StatsActivity extends Activity {
         setContentView(R.layout.activity_stats);
 
         AppData data = (AppData) getIntent().getSerializableExtra(Constants.DATA);
-
-        Log.i(TAG, data.getDayOneDate().toString());
     }
 }
 
